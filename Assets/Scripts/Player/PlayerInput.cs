@@ -1,61 +1,30 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerInput : MonoBehaviour
 {
-    [Header("速度")]
-    [SerializeField]
-    private float MoveSpeed = 5f; 
-    [SerializeField]
-    private float RevolveSpeed = 8f;
-    [SerializeField]
-    private float ScrollSpeed = 15f;
-
-    [SerializeField]
-    private PlayerController playerController;
-    [SerializeField]
-    private CameraController cameraController;
-    
-    void Start()
+    private PlayerInputSetting playerInputSetting;
+    public Vector2 playerMove = Vector2.zero;
+    void Awake()
     {
-        Cursor.lockState = CursorLockMode.Locked;
+        playerInputSetting = new PlayerInputSetting();
     }
-
-    private void PlayerMovement()
+    void Start()    
     {
-        float movex = Input.GetAxisRaw("Horizontal");
-        float movey = Input.GetAxisRaw("Vertical");
-        Vector3 velocity = (transform.right * movex + transform.forward * movey).normalized * MoveSpeed;
-        playerController.Move(velocity);
-    }
-
-    private void PlayerRotation()
-    {
-        float rotatex = Input.GetAxisRaw("Mouse X");
-        float rotatey = Input.GetAxisRaw("Mouse Y");
-        Vector3 yRotaion = new Vector3(0f, rotatex, 0f).normalized * RevolveSpeed;
-        Vector3 xRotaion = new Vector3(-rotatey, 0f, 0f).normalized * RevolveSpeed;
-        playerController.Rotate(yRotaion, xRotaion);
-    }
-
-    private void CreamerField()
-    {
-        float scroll =  Input.GetAxisRaw("Mouse ScrollWheel");
-        cameraController.Field(scroll * ScrollSpeed);
-    }
-
-    private void CreamerMovement()
-    {
-        float movex = Input.GetAxisRaw("Mouse X");
-        float movey = Input.GetAxisRaw("Mouse Y");
-        //cameraController.Move();
+//Cursor.lockState = CursorLockMode.Locked;
     }
     void Update()
     {
-        PlayerMovement();
-        PlayerRotation();
-        CreamerField();
-        CreamerMovement();
+        playerMove = playerInputSetting.Player.Move.ReadValue<Vector2>().normalized;
+    }
+    private void OnEnable()
+    {
+        playerInputSetting.Enable();
+    }
+    private void OnDisable()
+    {
+        playerInputSetting.Disable();
     }
 }
